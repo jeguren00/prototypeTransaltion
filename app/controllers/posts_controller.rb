@@ -21,10 +21,12 @@ class PostsController < ApplicationController
 
   def changeEs
     I18n.locale = :es
+    redirect_to posts_path
   end
 
   def changeEn
     I18n.locale = :en
+    redirect_to posts_path
   end
 
   # POST /posts or /posts.json
@@ -51,8 +53,13 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
+    currentLocale = I18n.locale;
+    I18n.locale = post_params["language"];
+    params["post"].delete("language")
+
     respond_to do |format|
       if @post.update(post_params)
+        I18n.locale = currentLocale;
         format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
         format.json { render :show, status: :ok, location: @post }
       else
